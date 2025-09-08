@@ -34,7 +34,7 @@ const toolIcons: Record<Tool, React.ReactNode> = {
 const tools: Record<ToolCategory, { id: Tool; label: string }[]> = {
   'combo-filter': [
     { id: 'combo-optimiser', label: 'Combo Optimiser' },
-    { id: 'capture-remover', label: 'Capture Remover' },
+    { id: 'capture-remover', label: 'ULP CLEANER' },
     { id: 'remove-duplicate', label: 'Remove Duplicate' },
     { id: 'get-duplicate', label: 'Get Duplicate' },
     { id: 'randomize', label: 'Randomize' },
