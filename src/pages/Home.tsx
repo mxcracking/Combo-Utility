@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ParticleBackground } from '@/components/ParticleBackground';
-import { Zap, Filter, Key, Mail, Trash2, ArrowRight, Github, Twitter } from 'lucide-react';
+import { Zap, Filter, Key, Mail, Trash2, ArrowRight, Github } from 'lucide-react';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -110,17 +110,9 @@ export const Home: React.FC = () => {
                 size="lg"
                 variant="outline"
                 className="hover:bg-primary/10 hover:border-primary"
-                onClick={() => window.open('https://github.com', '_blank')}
+                onClick={() => window.open('https://github.com/mxcracking/Combo-Utility-v1', '_blank')}
               >
                 <Github className="w-4 h-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="hover:bg-primary/10 hover:border-primary"
-                onClick={() => window.open('https://twitter.com', '_blank')}
-              >
-                <Twitter className="w-4 h-4" />
               </Button>
             </div>
           </div>
