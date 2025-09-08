@@ -18,14 +18,14 @@ const categories: { id: ToolCategory; label: string }[] = [
 export const Header: React.FC<HeaderProps> = ({ activeCategory, onCategoryChange }) => {
   return (
     <header className="sticky top-0 z-50 w-full backdrop-blur-lg bg-card/80 border-b border-border animate-fade-in">
-      <div className="container mx-auto px-4 py-4">
+      <div className="w-full px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 animate-scale-in">
             <div className="p-2 rounded-lg bg-gradient-to-br from-primary to-accent animate-pulse-slow">
               <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              ⚡ ComboUtility
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent text-left">
+              ComboUtility
             </h1>
           </div>
           
