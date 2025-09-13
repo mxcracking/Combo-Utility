@@ -62,33 +62,37 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeCategory, activeTool, on
   const currentTools = tools[activeCategory];
 
   return (
-    <aside className="w-64 border-r border-border bg-sidebar-background/50 backdrop-blur-sm animate-fade-in">
+    <aside className="w-64 border-r border-border bg-sidebar-background/50 backdrop-blur-sm animate-slide-in-left">
       <div className="p-4 space-y-2">
         {currentTools.map((tool, index) => (
           <button
             key={tool.id}
             onClick={() => onToolChange(tool.id)}
-            style={{ animationDelay: `${index * 0.05}s` }}
+            style={{ animationDelay: `${index * 0.06}s` }}
             className={cn(
               "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 animate-slide-in-right",
-              "hover:bg-sidebar-accent group hover-scale",
+              "hover:bg-sidebar-accent group hover-lift relative overflow-hidden",
+              "border border-transparent hover:border-primary/20",
               activeTool === tool.id
-                ? "bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 shadow-glow animate-pulse-slow"
+                ? "bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 shadow-glow animate-glow"
                 : ""
             )}
           >
             <span className={cn(
-              "flex items-center gap-1 transition-all duration-300",
-              activeTool === tool.id ? "text-primary scale-110" : "text-muted-foreground group-hover:text-foreground"
+              "flex items-center gap-1 transition-all duration-300 relative z-10",
+              activeTool === tool.id ? "text-primary scale-110 animate-bounce-in" : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
             )}>
               {toolIcons[tool.id]}
             </span>
             <span className={cn(
-              "text-sm font-medium transition-colors",
-              activeTool === tool.id ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+              "text-sm font-medium transition-all duration-300 relative z-10",
+              activeTool === tool.id ? "text-foreground font-semibold" : "text-muted-foreground group-hover:text-foreground"
             )}>
               {tool.label}
             </span>
+            {activeTool === tool.id && (
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 animate-pulse-slow" />
+            )}
           </button>
         ))}
       </div>

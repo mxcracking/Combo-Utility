@@ -80,7 +80,7 @@ export const TextEditor: React.FC<TextEditorProps> = ({
   const charCount = value.length;
 
   return (
-    <div className="flex-1 flex flex-col gap-4">
+    <div className="flex-1 flex flex-col gap-4 animate-fade-in-delayed">
       <div className="relative flex-1 group">
         <Textarea
           value={value}
@@ -90,15 +90,16 @@ export const TextEditor: React.FC<TextEditorProps> = ({
             "w-full h-full min-h-[400px] font-mono text-sm resize-none",
             "bg-card/50 backdrop-blur-sm border-border/50",
             "focus:border-primary focus:ring-2 focus:ring-primary/20",
-            "transition-all duration-300 animate-fade-in"
+            "transition-all duration-300 hover:shadow-lg hover:border-primary/30",
+            "animate-scale-in"
           )}
         />
         {value && (
-          <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity animate-slide-in-right">
-            <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded">
+          <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 animate-slide-in-right">
+            <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded backdrop-blur-sm border border-border/50 hover-scale">
               📊 {lineCount} lines
             </span>
-            <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded">
+            <span className="text-xs text-muted-foreground bg-background/80 px-2 py-1 rounded backdrop-blur-sm border border-border/50 hover-scale">
               ✏️ {charCount} chars
             </span>
           </div>
@@ -117,25 +118,31 @@ export const TextEditor: React.FC<TextEditorProps> = ({
         <Button
           onClick={onProcess}
           disabled={!value || isProcessing}
-          className="flex-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-button animate-scale-in hover-scale"
+          className="flex-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-button animate-bounce-in hover-lift relative overflow-hidden group"
         >
-          {isProcessing ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing... ⚙️
-            </>
-          ) : (
-            <>
-              <Sparkles className="mr-2 h-4 w-4" />
-              Process ✨
-            </>
+          <span className="relative z-10 flex items-center">
+            {isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing... ⚙️
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-4 w-4 group-hover:animate-pulse" />
+                Process ✨
+              </>
+            )}
+          </span>
+          {!isProcessing && (
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           )}
         </Button>
         <Button
           onClick={handleImport}
           variant="outline"
           size="icon"
-          className="hover:bg-primary/10 hover:border-primary animate-fade-in hover-scale"
+          className="hover:bg-primary/10 hover:border-primary animate-slide-in-right hover-lift"
+          style={{ animationDelay: '0.1s' }}
           title="Import file"
         >
           <Upload className="h-4 w-4" />
@@ -145,7 +152,8 @@ export const TextEditor: React.FC<TextEditorProps> = ({
           disabled={!value}
           variant="outline"
           size="icon"
-          className="hover:bg-destructive/10 hover:border-destructive animate-fade-in hover-scale"
+          className="hover:bg-destructive/10 hover:border-destructive animate-slide-in-right hover-lift"
+          style={{ animationDelay: '0.15s' }}
           title="Clear text"
         >
           <Trash2 className="h-4 w-4" />
@@ -155,7 +163,8 @@ export const TextEditor: React.FC<TextEditorProps> = ({
           disabled={!value}
           variant="outline"
           size="icon"
-          className="hover:bg-primary/10 hover:border-primary animate-fade-in hover-scale"
+          className="hover:bg-primary/10 hover:border-primary animate-slide-in-right hover-lift"
+          style={{ animationDelay: '0.2s' }}
           title="Copy to clipboard"
         >
           <Copy className="h-4 w-4" />
@@ -165,7 +174,8 @@ export const TextEditor: React.FC<TextEditorProps> = ({
           disabled={!value}
           variant="outline"
           size="icon"
-          className="hover:bg-primary/10 hover:border-primary animate-fade-in hover-scale"
+          className="hover:bg-primary/10 hover:border-primary animate-slide-in-right hover-lift"
+          style={{ animationDelay: '0.25s' }}
           title="Download file"
         >
           <Download className="h-4 w-4" />

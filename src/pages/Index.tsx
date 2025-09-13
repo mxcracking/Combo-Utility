@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { TextEditor } from '@/components/TextEditor';
+import { FileProcessor } from '@/components/FileProcessor';
 import { PasswordOptionsPanel } from '@/components/options/PasswordOptions';
 import { MailFilterOptionsPanel } from '@/components/options/MailFilterOptions';
 import { RemoveListOptionsPanel } from '@/components/options/RemoveListOptions';
 import { DomainResults } from '@/components/DomainResults';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
+import { FileText, Type } from 'lucide-react';
 import {
   Tool,
   ToolCategory,
@@ -28,6 +32,16 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [domainResults, setDomainResults] = useState<{ [key: string]: string }>({});
   const [removeListResult, setRemoveListResult] = useState<string>('');
+  const [processingMode, setProcessingMode] = useState<'text' | 'file'>('text');
+  const [showAnimations, setShowAnimations] = useState(false);
+
+  // Enable animations after a short delay to prevent interference with graphics
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAnimations(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Options states
   const [passwordOptions, setPasswordOptions] = useState<PasswordOptions>({
@@ -244,26 +258,64 @@ const Index = () => {
           <div className="container mx-auto p-6">
             <div className="grid gap-6 lg:grid-cols-[1fr,400px]">
               <div className="space-y-6">
-                <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-                  <CardContent className="p-6">
-                    <TextEditor
-                      value={inputText}
-                      onChange={setInputText}
-                      onProcess={handleProcess}
-                      isProcessing={isProcessing}
-                      placeholder="Paste your text here to begin processing..."
+                {/* Mode Toggle */}
+                <div className={`flex items-center gap-2 ${showAnimations ? 'animate-fade-in' : ''}`}>
+                  <Button
+                    onClick={() => setProcessingMode('text')}
+                    variant={processingMode === 'text' ? 'default' : 'outline'}
+                    size="sm"
+                    className="hover-lift"
+                  >
+                    <Type className="mr-2 h-4 w-4" />
+                    Text Mode
+                  </Button>
+                  <Button
+                    onClick={() => setProcessingMode('file')}
+                    variant={processingMode === 'file' ? 'default' : 'outline'}
+                    size="sm"
+                    className="hover-lift"
+                  >
+                    <FileText className="mr-2 h-4 w-4" />
+                    File Mode
+                  </Button>
+                </div>
+
+                {processingMode === 'text' ? (
+                  <Card className="bg-card/50 backdrop-blur-sm border-border/50 animate-slide-in-up hover-lift">
+                    <CardContent className="p-6">
+                      <TextEditor
+                        value={inputText}
+                        onChange={setInputText}
+                        onProcess={handleProcess}
+                        isProcessing={isProcessing}
+                        placeholder="Paste your text here to begin processing..."
+                      />
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="animate-slide-in-up">
+                    <FileProcessor
+                      activeTool={activeTool}
+                      passwordOptions={passwordOptions}
+                      mailFilterOptions={mailFilterOptions}
+                      removeListOptions={removeListOptions}
+                      insertOptions={insertOptions}
+                      modifyOptions={modifyOptions}
+                      notContainOptions={notContainOptions}
                     />
-                  </CardContent>
-                </Card>
+                  </div>
+                )}
 
                 {activeTool === 'multi-domain' && Object.keys(domainResults).length > 0 && (
-                  <DomainResults results={domainResults} />
+                  <div className="animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+                    <DomainResults results={domainResults} />
+                  </div>
                 )}
 
                 {removeListResult && (
-                  <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+                  <Card className="bg-card/50 backdrop-blur-sm border-border/50 animate-slide-in-up hover-lift" style={{ animationDelay: '0.3s' }}>
                     <CardContent className="p-6">
-                      <h3 className="text-lg font-semibold mb-4">Removed Items</h3>
+                      <h3 className="text-lg font-semibold mb-4 animate-fade-in">Removed Items</h3>
                       <TextEditor
                         value={removeListResult}
                         onChange={() => {}}
@@ -277,32 +329,38 @@ const Index = () => {
 
               <div className="space-y-6">
                 {showPasswordOptions && (
-                  <PasswordOptionsPanel
-                    tool={activeTool as any}
-                    passwordOptions={passwordOptions}
-                    notContainOptions={notContainOptions}
-                    insertOptions={insertOptions}
-                    modifyOptions={modifyOptions}
-                    onPasswordOptionsChange={setPasswordOptions}
-                    onNotContainOptionsChange={setNotContainOptions}
-                    onInsertOptionsChange={setInsertOptions}
-                    onModifyOptionsChange={setModifyOptions}
-                  />
+                  <div className="animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+                    <PasswordOptionsPanel
+                      tool={activeTool as any}
+                      passwordOptions={passwordOptions}
+                      notContainOptions={notContainOptions}
+                      insertOptions={insertOptions}
+                      modifyOptions={modifyOptions}
+                      onPasswordOptionsChange={setPasswordOptions}
+                      onNotContainOptionsChange={setNotContainOptions}
+                      onInsertOptionsChange={setInsertOptions}
+                      onModifyOptionsChange={setModifyOptions}
+                    />
+                  </div>
                 )}
 
                 {showMailFilterOptions && (
-                  <MailFilterOptionsPanel
-                    tool={activeTool as any}
-                    options={mailFilterOptions}
-                    onOptionsChange={setMailFilterOptions}
-                  />
+                  <div className="animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+                    <MailFilterOptionsPanel
+                      tool={activeTool as any}
+                      options={mailFilterOptions}
+                      onOptionsChange={setMailFilterOptions}
+                    />
+                  </div>
                 )}
 
                 {showRemoveListOptions && (
-                  <RemoveListOptionsPanel
-                    options={removeListOptions}
-                    onOptionsChange={setRemoveListOptions}
-                  />
+                  <div className="animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+                    <RemoveListOptionsPanel
+                      options={removeListOptions}
+                      onOptionsChange={setRemoveListOptions}
+                    />
+                  </div>
                 )}
               </div>
             </div>

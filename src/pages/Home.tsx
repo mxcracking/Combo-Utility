@@ -95,11 +95,11 @@ export const Home: React.FC = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
             <Button
               size="lg"
-              onClick={() => navigate('/app')}
-              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-button text-primary-foreground px-8 hover-scale group"
+              onClick={() => navigate('/app', { replace: true })}
+              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-button text-primary-foreground px-8 hover-glow group"
             >
               Get Started
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -118,8 +118,8 @@ export const Home: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <div className="mt-16 text-center text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <p>Built with 💛 for developers and data professionals</p>
+          <div className="mt-16 text-center text-sm text-muted-foreground">
+            <p className="hover-glow cursor-default">Built with 💛 for developers and data professionals</p>
           </div>
         </div>
       </div>
