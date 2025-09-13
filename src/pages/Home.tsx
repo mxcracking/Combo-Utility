@@ -1,39 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { ParticleBackground } from '@/components/ParticleBackground';
-import { Zap, Filter, Key, Mail, Trash2, ArrowRight, Github } from 'lucide-react';
+import { Zap, ArrowRight, Github } from 'lucide-react';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
 
-  const features = [
-    {
-      icon: <Filter className="w-5 h-5" />,
-      title: "Combo Filter",
-      description: "Clean, optimize and transform your data",
-      emoji: "🎯"
-    },
-    {
-      icon: <Key className="w-5 h-5" />,
-      title: "Password Tools",
-      description: "Validate and modify passwords efficiently",
-      emoji: "🔐"
-    },
-    {
-      icon: <Mail className="w-5 h-5" />,
-      title: "Mail Filter",
-      description: "Filter emails by domain and criteria",
-      emoji: "📧"
-    },
-    {
-      icon: <Trash2 className="w-5 h-5" />,
-      title: "Remove List",
-      description: "Remove specific items from your lists",
-      emoji: "🗑️"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -68,31 +41,6 @@ export const Home: React.FC = () => {
             </p>
           </div>
 
-          {/* Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
-            {features.map((feature, index) => (
-              <Card 
-                key={index}
-                className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-all duration-300 hover-scale animate-fade-in group"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 group-hover:from-primary/30 group-hover:to-accent/30 transition-colors">
-                    {feature.icon}
-                  </div>
-                  <div className="flex-1 text-left">
-                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                      {feature.title}
-                      <span>{feature.emoji}</span>
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">

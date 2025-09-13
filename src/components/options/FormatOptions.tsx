@@ -64,6 +64,7 @@ export const FormatOptions: React.FC<FormatOptionsProps> = ({
               </div>
             </Label>
           </div>
+          
         </RadioGroup>
       </CardContent>
     </Card>

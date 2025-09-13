@@ -9,6 +9,7 @@ import { MailFilterOptionsPanel } from '@/components/options/MailFilterOptions';
 import { RemoveListOptionsPanel } from '@/components/options/RemoveListOptions';
 import { FormatOptions } from '@/components/options/FormatOptions';
 import { DomainResults } from '@/components/DomainResults';
+import { LinkAnalyzer } from '@/components/LinkAnalyzer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +38,8 @@ const Index = () => {
   const [removeListResult, setRemoveListResult] = useState<string>('');
   const [processingMode, setProcessingMode] = useState<'text' | 'file'>('text');
   const [showAnimations, setShowAnimations] = useState(false);
+  const [processedText, setProcessedText] = useState<string>('');
+  const [showLinkAnalyzer, setShowLinkAnalyzer] = useState(false);
 
   // Enable animations after a short delay to prevent interference with graphics
   useEffect(() => {
@@ -132,6 +135,7 @@ const Index = () => {
 
     setIsProcessing(true);
     let result = inputText;
+    setShowLinkAnalyzer(false);
 
     try {
       switch (activeTool) {
@@ -238,6 +242,8 @@ const Index = () => {
       }
 
       setInputText(result);
+      setProcessedText(result);
+      setShowLinkAnalyzer(true);
       toast({
         title: "Processed",
         description: "Text has been processed successfully",
@@ -272,26 +278,34 @@ const Index = () => {
         
         <main className="flex-1 overflow-auto">
           <div className="container mx-auto p-6">
+            {/* Hero Section */}
+            <div className="mb-6">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent mb-3">
+                {activeTool.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </h1>
+              <p className="text-muted-foreground text-base">
+                Professional text processing with advanced tools and intelligent filtering
+              </p>
+            </div>
+
             <div className="grid gap-6 lg:grid-cols-[1fr,400px]">
               <div className="space-y-6">
                 {/* Mode Toggle */}
-                <div className={`flex items-center gap-2 ${showAnimations ? 'animate-fade-in' : ''}`}>
+                <div className={`flex items-center gap-3 ${showAnimations ? 'animate-fade-in' : ''}`}>
                   <Button
                     onClick={() => setProcessingMode('text')}
                     variant={processingMode === 'text' ? 'default' : 'outline'}
-                    size="sm"
-                    className="hover-lift"
+                    className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1"
                   >
-                    <Type className="mr-2 h-4 w-4" />
+                    <Type className="mr-2 h-5 w-5" />
                     Text Mode
                   </Button>
                   <Button
                     onClick={() => setProcessingMode('file')}
                     variant={processingMode === 'file' ? 'default' : 'outline'}
-                    size="sm"
-                    className="hover-lift"
+                    className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 hover:-translate-y-1"
                   >
-                    <FileText className="mr-2 h-4 w-4" />
+                    <FileText className="mr-2 h-5 w-5" />
                     File Mode
                   </Button>
                 </div>
@@ -388,6 +402,21 @@ const Index = () => {
                       onFormatChange={(format) => setComboOptimizerOptions({ ...comboOptimizerOptions, outputFormat: format })}
                       title="Combo Optimizer Format"
                       description="Choose the output format for the combo optimizer"
+                    />
+                  </div>
+                )}
+
+                {showComboOptimizerOptions && (
+                  <div className="animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
+                    <LinkAnalyzer
+                      processedText={processedText}
+                      onAnalyzeComplete={(cleanedText, removedLinks) => {
+                        setInputText(cleanedText);
+                        toast({
+                          title: "Credentials extracted!",
+                          description: `${removedLinks.length} URLs processed and credentials normalized`,
+                        });
+                      }}
                     />
                   </div>
                 )}
