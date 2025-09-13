@@ -14,6 +14,7 @@ interface SidebarProps {
 
 const toolIcons: Record<Tool, React.ReactNode> = {
   'combo-optimiser': <><Filter className="w-4 h-4" /> <span className="text-xs">🎯</span></>,
+  'ulp-cleaner': <><Filter className="w-4 h-4" /> <span className="text-xs">🧹</span></>,
   'capture-remover': <><XCircle className="w-4 h-4" /> <span className="text-xs">✂️</span></>,
   'remove-duplicate': <><Hash className="w-4 h-4" /> <span className="text-xs">🔍</span></>,
   'get-duplicate': <><Copy className="w-4 h-4" /> <span className="text-xs">📋</span></>,
@@ -34,7 +35,8 @@ const toolIcons: Record<Tool, React.ReactNode> = {
 const tools: Record<ToolCategory, { id: Tool; label: string }[]> = {
   'combo-filter': [
     { id: 'combo-optimiser', label: 'Combo Optimiser' },
-    { id: 'capture-remover', label: 'ULP CLEANER' },
+    { id: 'ulp-cleaner', label: 'ULP Cleaner' },
+    { id: 'capture-remover', label: 'Capture Remover' },
     { id: 'remove-duplicate', label: 'Remove Duplicate' },
     { id: 'get-duplicate', label: 'Get Duplicate' },
     { id: 'randomize', label: 'Randomize' },

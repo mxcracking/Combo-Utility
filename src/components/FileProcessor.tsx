@@ -17,6 +17,8 @@ interface FileProcessorProps {
   insertOptions?: any;
   modifyOptions?: any;
   notContainOptions?: any;
+  comboOptimizerOptions?: any;
+  ulpCleanerOptions?: any;
 }
 
 export const FileProcessor: React.FC<FileProcessorProps> = ({
@@ -27,6 +29,8 @@ export const FileProcessor: React.FC<FileProcessorProps> = ({
   insertOptions,
   modifyOptions,
   notContainOptions,
+  comboOptimizerOptions,
+  ulpCleanerOptions,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -143,7 +147,10 @@ export const FileProcessor: React.FC<FileProcessorProps> = ({
       // Process based on active tool
       switch (activeTool) {
         case 'combo-optimiser':
-          result = textProcessing.comboOptimiser(text);
+          result = textProcessing.comboOptimiser(text, comboOptimizerOptions || {});
+          break;
+        case 'ulp-cleaner':
+          result = textProcessing.ulpCleaner(text, ulpCleanerOptions || {});
           break;
         case 'capture-remover':
           result = textProcessing.captureRemover(text);

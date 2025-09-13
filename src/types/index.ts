@@ -2,6 +2,7 @@ export type ToolCategory = 'combo-filter' | 'password-tools' | 'mail-filter' | '
 
 export type ComboFilterTool = 
   | 'combo-optimiser'
+  | 'ulp-cleaner'
   | 'capture-remover'
   | 'remove-duplicate'
   | 'get-duplicate'
@@ -62,4 +63,14 @@ export interface RemoveListOptions {
   list: string;
   removed?: boolean;
   exactMatch?: boolean;
+}
+
+export type OutputFormat = 'email:pass' | 'user:pass' | 'both';
+
+export interface ComboOptimizerOptions {
+  outputFormat?: OutputFormat;
+}
+
+export interface ULPCleanerOptions {
+  outputFormat?: OutputFormat;
 }

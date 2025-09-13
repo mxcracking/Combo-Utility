@@ -1,4 +1,4 @@
-import { PasswordOptions, NotContainOptions, InsertOptions, ModifyOptions, MailFilterOptions, RemoveListOptions } from '@/types';
+import { PasswordOptions, NotContainOptions, InsertOptions, ModifyOptions, MailFilterOptions, RemoveListOptions, ComboOptimizerOptions, ULPCleanerOptions, OutputFormat } from '@/types';
 
 export const randomize = (text: string): string => {
   const lines = text.split(/\r?\n/);
@@ -10,9 +10,16 @@ export const randomize = (text: string): string => {
 };
 
 export const captureRemover = (text: string): string => {
-  const match = text.match(/[0-9a-zA-Z_.]+@[0-9a-zA-Z_.]+:[\S]+/g);
-  if (!match) return "";
-  return match.join("\n");
+  // Match both email:password and URL:username:password formats
+  const emailMatch = text.match(/[0-9a-zA-Z_.]+@[0-9a-zA-Z_.]+:[\S]+/g);
+  const urlMatch = text.match(/https?:\/\/[^\s]+:[^\s]+:[^\s]+/g);
+  
+  const matches = [];
+  if (emailMatch) matches.push(...emailMatch);
+  if (urlMatch) matches.push(...urlMatch);
+  
+  if (matches.length === 0) return "";
+  return matches.join("\n");
 };
 
 export const removeDuplicates = (text: string): string => {
@@ -59,10 +66,16 @@ export const emailToEmail = (text: string): string => {
   return match.join("\n");
 };
 
-export const comboOptimiser = (text: string): string => {
+export const comboOptimiser = (text: string, options: ComboOptimizerOptions = {}): string => {
   let result = captureRemover(text);
   result = removeDuplicates(result);
   result = removeEmptyLines(result);
+  
+  // Apply format selection if specified
+  if (options.outputFormat) {
+    result = applyOutputFormat(result, options.outputFormat);
+  }
+  
   return result;
 };
 
@@ -211,4 +224,72 @@ export const removeListDefault = (text: string, options: RemoveListOptions): { m
   });
   
   return { main: result, removed };
+};
+
+// Helper function to apply output format
+export const applyOutputFormat = (text: string, format: OutputFormat): string => {
+  const lines = text.split(/\r?\n/).filter(line => line.trim());
+  
+  switch (format) {
+    case 'email:pass':
+      // Keep only email:password format
+      return lines.filter(line => line.includes('@')).join('\n');
+    
+    case 'user:pass':
+      // Convert email:password to user:password format
+      // Also handle URL:username:password format
+      return lines.map(line => {
+        if (line.includes('@')) {
+          // Handle email:password format
+          return emailToUser(line);
+        } else if (line.includes('://') && line.split(':').length >= 3) {
+          // Handle URL:username:password format (e.g., https://www.tiktok.com:maria_zepeto15:bofonda1)
+          const parts = line.split(':');
+          if (parts.length >= 3) {
+            // Extract username:password part (skip the URL part)
+            const urlPart = parts.slice(0, -2).join(':'); // Everything except last two parts
+            const username = parts[parts.length - 2];
+            const password = parts[parts.length - 1];
+            return `${username}:${password}`;
+          }
+        }
+        return line;
+      }).join('\n');
+    
+    case 'both':
+      // Return both formats
+      const emailPassLines = lines.filter(line => line.includes('@'));
+      const userPassLines = lines.map(line => {
+        if (line.includes('@')) {
+          return emailToUser(line);
+        } else if (line.includes('://') && line.split(':').length >= 3) {
+          // Handle URL:username:password format
+          const parts = line.split(':');
+          if (parts.length >= 3) {
+            const username = parts[parts.length - 2];
+            const password = parts[parts.length - 1];
+            return `${username}:${password}`;
+          }
+        }
+        return line;
+      });
+      return [...emailPassLines, ...userPassLines].join('\n');
+    
+    default:
+      return text;
+  }
+};
+
+// ULP Cleaner - similar to combo optimizer but with different processing
+export const ulpCleaner = (text: string, options: ULPCleanerOptions = {}): string => {
+  let result = captureRemover(text);
+  result = removeDuplicates(result);
+  result = removeEmptyLines(result);
+  
+  // Apply format selection if specified
+  if (options.outputFormat) {
+    result = applyOutputFormat(result, options.outputFormat);
+  }
+  
+  return result;
 };

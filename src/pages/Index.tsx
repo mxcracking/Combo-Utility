@@ -7,6 +7,7 @@ import { FileProcessor } from '@/components/FileProcessor';
 import { PasswordOptionsPanel } from '@/components/options/PasswordOptions';
 import { MailFilterOptionsPanel } from '@/components/options/MailFilterOptions';
 import { RemoveListOptionsPanel } from '@/components/options/RemoveListOptions';
+import { FormatOptions } from '@/components/options/FormatOptions';
 import { DomainResults } from '@/components/DomainResults';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,8 @@ import {
   ModifyOptions,
   MailFilterOptions,
   RemoveListOptions,
+  ComboOptimizerOptions,
+  ULPCleanerOptions,
 } from '@/types';
 import * as textProcessing from '@/utils/textProcessing';
 
@@ -81,6 +84,14 @@ const Index = () => {
     exactMatch: false,
   });
 
+  const [comboOptimizerOptions, setComboOptimizerOptions] = useState<ComboOptimizerOptions>({
+    outputFormat: 'email:pass',
+  });
+
+  const [ulpCleanerOptions, setULPCleanerOptions] = useState<ULPCleanerOptions>({
+    outputFormat: 'email:pass',
+  });
+
   const handleCategoryChange = (category: ToolCategory) => {
     setActiveCategory(category);
     setDomainResults({});
@@ -126,7 +137,10 @@ const Index = () => {
       switch (activeTool) {
         // Combo Filter tools
         case 'combo-optimiser':
-          result = textProcessing.comboOptimiser(inputText);
+          result = textProcessing.comboOptimiser(inputText, comboOptimizerOptions);
+          break;
+        case 'ulp-cleaner':
+          result = textProcessing.ulpCleaner(inputText, ulpCleanerOptions);
           break;
         case 'capture-remover':
           result = textProcessing.captureRemover(inputText);
@@ -242,6 +256,8 @@ const Index = () => {
   const showPasswordOptions = activeCategory === 'password-tools';
   const showMailFilterOptions = activeCategory === 'mail-filter';
   const showRemoveListOptions = activeCategory === 'remove-list';
+  const showComboOptimizerOptions = activeTool === 'combo-optimiser';
+  const showULPCleanerOptions = activeTool === 'ulp-cleaner';
 
   return (
     <Layout>
@@ -302,6 +318,8 @@ const Index = () => {
                       insertOptions={insertOptions}
                       modifyOptions={modifyOptions}
                       notContainOptions={notContainOptions}
+                      comboOptimizerOptions={comboOptimizerOptions}
+                      ulpCleanerOptions={ulpCleanerOptions}
                     />
                   </div>
                 )}
@@ -359,6 +377,28 @@ const Index = () => {
                     <RemoveListOptionsPanel
                       options={removeListOptions}
                       onOptionsChange={setRemoveListOptions}
+                    />
+                  </div>
+                )}
+
+                {showComboOptimizerOptions && (
+                  <div className="animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+                    <FormatOptions
+                      outputFormat={comboOptimizerOptions.outputFormat || 'email:pass'}
+                      onFormatChange={(format) => setComboOptimizerOptions({ ...comboOptimizerOptions, outputFormat: format })}
+                      title="Combo Optimizer Format"
+                      description="Choose the output format for the combo optimizer"
+                    />
+                  </div>
+                )}
+
+                {showULPCleanerOptions && (
+                  <div className="animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
+                    <FormatOptions
+                      outputFormat={ulpCleanerOptions.outputFormat || 'email:pass'}
+                      onFormatChange={(format) => setULPCleanerOptions({ ...ulpCleanerOptions, outputFormat: format })}
+                      title="ULP Cleaner Format"
+                      description="Choose the output format for the ULP cleaner"
                     />
                   </div>
                 )}
