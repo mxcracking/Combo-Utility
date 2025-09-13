@@ -3,18 +3,15 @@ import { Layout } from '@/components/Layout';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { TextEditor } from '@/components/TextEditor';
-import { FileProcessor } from '@/components/FileProcessor';
 import { PasswordOptionsPanel } from '@/components/options/PasswordOptions';
 import { MailFilterOptionsPanel } from '@/components/options/MailFilterOptions';
 import { RemoveListOptionsPanel } from '@/components/options/RemoveListOptions';
 import { FormatOptions } from '@/components/options/FormatOptions';
 import { DomainResults } from '@/components/DomainResults';
-import { LinkAnalyzer } from '@/components/LinkAnalyzer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
-import { FileText, Type } from 'lucide-react';
 import {
   Tool,
   ToolCategory,
@@ -36,10 +33,7 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [domainResults, setDomainResults] = useState<{ [key: string]: string }>({});
   const [removeListResult, setRemoveListResult] = useState<string>('');
-  const [processingMode, setProcessingMode] = useState<'text' | 'file'>('text');
   const [showAnimations, setShowAnimations] = useState(false);
-  const [processedText, setProcessedText] = useState<string>('');
-  const [showLinkAnalyzer, setShowLinkAnalyzer] = useState(false);
 
   // Enable animations after a short delay to prevent interference with graphics
   useEffect(() => {
@@ -135,7 +129,6 @@ const Index = () => {
 
     setIsProcessing(true);
     let result = inputText;
-    setShowLinkAnalyzer(false);
 
     try {
       switch (activeTool) {
@@ -242,8 +235,6 @@ const Index = () => {
       }
 
       setInputText(result);
-      setProcessedText(result);
-      setShowLinkAnalyzer(true);
       toast({
         title: "Processed",
         description: "Text has been processed successfully",
@@ -290,53 +281,17 @@ const Index = () => {
 
             <div className="grid gap-6 lg:grid-cols-[1fr,400px]">
               <div className="space-y-6">
-                {/* Mode Toggle */}
-                <div className={`flex items-center gap-3 ${showAnimations ? 'animate-fade-in' : ''}`}>
-                  <Button
-                    onClick={() => setProcessingMode('text')}
-                    variant={processingMode === 'text' ? 'default' : 'outline'}
-                    className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1"
-                  >
-                    <Type className="mr-2 h-5 w-5" />
-                    Text Mode
-                  </Button>
-                  <Button
-                    onClick={() => setProcessingMode('file')}
-                    variant={processingMode === 'file' ? 'default' : 'outline'}
-                    className="px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 hover:-translate-y-1"
-                  >
-                    <FileText className="mr-2 h-5 w-5" />
-                    File Mode
-                  </Button>
-                </div>
-
-                {processingMode === 'text' ? (
-                  <Card className="bg-card/50 backdrop-blur-sm border-border/50 animate-slide-in-up hover-lift">
-                    <CardContent className="p-6">
-                      <TextEditor
-                        value={inputText}
-                        onChange={setInputText}
-                        onProcess={handleProcess}
-                        isProcessing={isProcessing}
-                        placeholder="Paste your text here to begin processing..."
-                      />
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="animate-slide-in-up">
-                    <FileProcessor
-                      activeTool={activeTool}
-                      passwordOptions={passwordOptions}
-                      mailFilterOptions={mailFilterOptions}
-                      removeListOptions={removeListOptions}
-                      insertOptions={insertOptions}
-                      modifyOptions={modifyOptions}
-                      notContainOptions={notContainOptions}
-                      comboOptimizerOptions={comboOptimizerOptions}
-                      ulpCleanerOptions={ulpCleanerOptions}
+                <Card className="bg-card/50 backdrop-blur-sm border-border/50 animate-slide-in-up hover-lift">
+                  <CardContent className="p-6">
+                    <TextEditor
+                      value={inputText}
+                      onChange={setInputText}
+                      onProcess={handleProcess}
+                      isProcessing={isProcessing}
+                      placeholder="Paste your text here to begin processing..."
                     />
-                  </div>
-                )}
+                  </CardContent>
+                </Card>
 
                 {activeTool === 'multi-domain' && Object.keys(domainResults).length > 0 && (
                   <div className="animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
@@ -406,20 +361,6 @@ const Index = () => {
                   </div>
                 )}
 
-                {showComboOptimizerOptions && (
-                  <div className="animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
-                    <LinkAnalyzer
-                      processedText={processedText}
-                      onAnalyzeComplete={(cleanedText, removedLinks) => {
-                        setInputText(cleanedText);
-                        toast({
-                          title: "Credentials extracted!",
-                          description: `${removedLinks.length} URLs processed and credentials normalized`,
-                        });
-                      }}
-                    />
-                  </div>
-                )}
 
                 {showULPCleanerOptions && (
                   <div className="animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
